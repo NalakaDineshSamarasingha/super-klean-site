@@ -6,6 +6,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
+    if (!adminDb || !adminAuth) {
+      return NextResponse.json(
+        { error: 'Services not initialized' },
+        { status: 500 }
+      );
+    }
+
     const { firstName, lastName, username, email, password } = await request.json();
 
     // Validate input
