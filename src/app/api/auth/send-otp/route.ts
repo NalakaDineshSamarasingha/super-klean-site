@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     const emailHtml = generateOTPEmailTemplate(otp);
 
     const result = await resend.emails.send({
-      from: "onboarding@resend.dev", // Use Resend's test domain
+      from: "SuperKlean <noreply@superkleen.online>",
       to: email,
       subject: "Your OTP for Email Verification - SuperKlean",
       html: emailHtml,

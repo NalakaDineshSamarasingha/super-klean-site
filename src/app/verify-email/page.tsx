@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Navbar from "@/components/Navbar";
@@ -130,19 +131,32 @@ function VerifyEmailContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="relative min-h-screen flex flex-col bg-black text-white">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/bg.jpg"
+          alt="Vehicle service background"
+          fill
+          className="object-cover opacity-60"
+          priority
+          quality={100}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40"></div>
+      </div>
+
       <Navbar />
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2 text-black">Verify Your Email</h1>
-            <p className="text-gray-600">
-              Enter the 6-digit code sent to <span className="font-medium text-black">{email}</span>
+            <h1 className="text-4xl font-bold mb-2 text-white">Verify Your Email</h1>
+            <p className="text-gray-300">
+              Enter the 6-digit code sent to <span className="font-medium text-[#FF5733]">{email}</span>
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6 bg-white border border-gray-200 rounded-lg shadow p-8">
-            <div className="flex justify-center gap-2">
+          <form onSubmit={handleSubmit} className="space-y-6 bg-black/80 backdrop-blur-sm border border-white/10 rounded-lg shadow-2xl p-8">
+            <div className="flex justify-center gap-2 ">
               {otp.map((digit, index) => (
                 <input
                   key={index}
@@ -152,23 +166,23 @@ function VerifyEmailContent() {
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
-                  className="w-12 h-14 text-center text-2xl font-bold bg-gray-50 border border-gray-300 rounded focus:border-[#FF5733] focus:outline-none focus:ring-2 focus:ring-[#FF5733] text-black"
+                  className="w-12 h-14 text-center text-2xl font-bold bg-white/10 border border-white/20 rounded focus:border-[#FF5733] focus:outline-none focus:ring-2 focus:ring-[#FF5733] text-white"
                   required
                 />
               ))}
             </div>
-
+              <div className='p-5'></div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#FF5733] text-white font-bold rounded-md hover:bg-[#E64A2E] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full  py-3 bg-[#FF5733] text-white font-bold rounded-md hover:bg-[#E64A2E] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Verifying...' : 'Verify & Create Account'}
             </button>
 
             <div className="text-center">
               {resendCountdown > 0 ? (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-400">
                   Resend code in {resendCountdown} seconds
                 </p>
               ) : (
@@ -190,7 +204,7 @@ function VerifyEmailContent() {
                 sessionStorage.removeItem('signupData');
                 router.push('/signup');
               }}
-              className="text-sm text-gray-600 hover:text-[#FF5733]"
+              className="text-sm text-gray-300 hover:text-[#FF5733]"
             >
               ← Back to Sign Up
             </button>
@@ -204,8 +218,8 @@ function VerifyEmailContent() {
 export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-black">Loading...</div>
+      <div className="relative min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">Loading...</div>
       </div>
     }>
       <VerifyEmailContent />

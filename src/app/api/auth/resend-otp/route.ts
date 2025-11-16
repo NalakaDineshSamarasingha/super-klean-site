@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     // Send OTP email
     await resend.emails.send({
-      from: 'SuperKlean <onboarding@resend.dev>',
+      from: 'SuperKlean <noreply@superkleen.online>',
       to: userData?.email,
       subject: 'New Verification Code - SuperKlean',
       html: `
