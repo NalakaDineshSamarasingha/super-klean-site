@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             error:
-              "Failed to send email. Please contact support at itfsu.fitsixes@gmail.com for assistance.",
+              "Failed to send email. Please contact support for assistance.",
           },
           { status: 400 }
         );

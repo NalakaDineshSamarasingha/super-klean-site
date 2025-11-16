@@ -69,20 +69,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white overflow-hidden">
+    <div className="relative min-h-screen flex flex-col bg-black text-white overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/bg.jpg"
+          alt="Vehicle service background"
+          fill
+          className="object-cover opacity-60"
+          priority
+          quality={100}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40"></div>
+      </div>
+      
       <Navbar />
-      <div className="flex-1 flex md:-mt-24 mb-0">
+      <div className="relative z-10 flex-1 flex items-center">
         {/* Left side - Login Form */}
-        <div className="flex-1 flex items-center justify-center p-8 bg-transparent">
-          <div className="max-w-md w-full space-y-8 p-12 bg-white border border-gray-200 rounded-lg shadow">
-            <h2 className="text-left text-3xl font-extrabold text-black">
+        <div className="flex-1 flex items-center justify-center gap-6 p-8">
+          <div className="max-w-md w-full space-y-8 gap-6 p-12  backdrop-blur-sm  rounded-lg shadow-2xl">
+            <h2 className="text-left text-3xl font-extrabold text-white pb-5">
               Login to your account
             </h2>
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-              <div>
+            <form className="space-y-6 flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+              <div className="flex flex-col gap-2">
                 <label
                   htmlFor="identifier"
-                  className="block text-sm font-medium text-black"
+                  className="block text-sm font-medium text-white"
                 >
                   Email or Username
                 </label>
@@ -92,13 +105,13 @@ export default function LoginPage() {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="Enter your email or username"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-900 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733]"
+                  className="mt-1 block w-full px-3 py-2 border border-white/20 rounded-md shadow-sm bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733]"
                 />
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-black"
+                  className="block text-sm font-medium text-white"
                 >
                   Password
                 </label>
@@ -108,7 +121,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-900 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733]"
+                  className="mt-1 block w-full px-3 py-2 border border-white/20 rounded-md shadow-sm bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733]"
                 />
               </div>
               <button
@@ -121,7 +134,7 @@ export default function LoginPage() {
               </button>
             </form>
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-300">
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/signup"
@@ -134,15 +147,11 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Right side - Logo */}
-        <div className="flex-1 hidden md:flex items-center justify-center p-8 bg-transparent">
-          <div className="relative w-full h-192 max-w-4xl">
-            <Image
-              src="/fitsixeslogo.png"
-              alt="Fit Sixes Logo"
-              fill
-              className="object-contain"
-            />
+        {/* Right side - Branding */}
+        <div className="flex-1 hidden md:flex items-center justify-center p-8">
+          <div className="text-center">
+            <h1 className="text-8xl font-bold text-[#FF5733] tracking-wider font-[family-name:var(--font-teko)]">SUPERKLEAN</h1>
+            <p className="text-2xl text-white mt-4 tracking-wide">VEHICLE SERVICE CENTER</p>
           </div>
         </div>
       </div>

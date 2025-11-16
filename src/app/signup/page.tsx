@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -215,20 +216,33 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="relative min-h-screen flex flex-col bg-black text-white">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/bg.jpg"
+          alt="Vehicle service background"
+          fill
+          className="object-cover opacity-60"
+          priority
+          quality={100}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40"></div>
+      </div>
+      
       <Navbar />
-      <div className="flex-1 flex mb-0">
+      <div className="relative z-10 flex-1 flex items-center py-12">
         {/* Left side - Signup Form */}
-        <div className="flex-1 flex items-start justify-center p-8 bg-transparent">
-          <div className="max-w-md w-full space-y-8 p-12 bg-white border border-gray-200 rounded-lg shadow">
-            <h2 className="text-left text-3xl font-extrabold text-black">
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="max-w-md w-full space-y-8 p-12  rounded-lg shadow-2xl">
+            <h2 className="text-left text-3xl font-extrabold text-white pb-6">
               Sign up for an account
             </h2>
             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-              <div>
+              <div className="flex flex-col gap-2">
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-black"
+                  className="block text-sm font-medium text-white"
                 >
                   Username *
                 </label>
@@ -250,14 +264,14 @@ export default function SignupPage() {
                       handleUsernameBlur();
                       setUsernameFocused(false);
                     }}
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-gray-50 text-gray-900 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733] ${
+                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733] ${
                       usernameError
                         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                         : usernameAvailable === true
                           ? "border-green-500 focus:ring-green-500 focus:border-green-500"
                           : usernameAvailable === false
                             ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                            : "border-gray-300"
+                            : "border-white/20"
                     }`}
                   />
                   {usernameChecking && (
@@ -318,10 +332,10 @@ export default function SignupPage() {
                   </ul>
                 </div>
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-black"
+                  className="block text-sm font-medium text-white"
                 >
                   Email *
                 </label>
@@ -344,10 +358,10 @@ export default function SignupPage() {
                   <p className="mt-1 text-sm text-red-600">{emailError}</p>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-black"
+                  className="block text-sm font-medium text-white"
                 >
                   Password *
                 </label>
@@ -427,10 +441,10 @@ export default function SignupPage() {
                   <p className="mt-1 text-sm text-red-600">{passwordError}</p>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-black"
+                  className="block text-sm font-medium text-white"
                 >
                   Confirm Password *
                 </label>
@@ -439,7 +453,7 @@ export default function SignupPage() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-900 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733]"
+                  className="mt-1 block w-full px-3 py-2 border border-white/20 rounded-md shadow-sm bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733]"
                 />
                 {confirmPassword &&
                   password &&
@@ -453,7 +467,7 @@ export default function SignupPage() {
                 type="button"
                 onClick={handleRegister}
                 disabled={loading || !isFormValid()}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF5733] hover:bg-[#E64A2E] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF5733] disabled:opacity-50 ${
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF5733] hover:bg-[#E64A2E]  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF5733] disabled:opacity-50 ${
                   loading || !isFormValid()
                     ? "cursor-not-allowed"
                     : "cursor-pointer"
@@ -463,7 +477,7 @@ export default function SignupPage() {
               </button>
             </form>
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-300">
                 Already have an account?{" "}
                 <Link
                   href="/login"
@@ -477,13 +491,10 @@ export default function SignupPage() {
         </div>
 
         {/* Right side - Branding */}
-        <div
-          className="flex-none hidden md:flex items-center justify-center p-8 bg-gradient-to-br from-gray-50 to-gray-100"
-          style={{ height: "100%", width: "50%" }}
-        >
+        <div className="flex-1 hidden md:flex items-center justify-center p-8">
           <div className="text-center">
-            <h1 className="text-6xl font-bold text-black mb-4">SuperKlean</h1>
-            <p className="text-2xl text-gray-600">Vehicle Service Center</p>
+            <h1 className="text-8xl font-bold text-[#FF5733] tracking-wider font-[family-name:var(--font-teko)]">SUPERKLEAN</h1>
+            <p className="text-2xl text-white mt-4 tracking-wide">VEHICLE SERVICE CENTER</p>
           </div>
         </div>
       </div>
