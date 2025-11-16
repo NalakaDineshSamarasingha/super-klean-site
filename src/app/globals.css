@@ -112,6 +112,15 @@ body {
   }
 }
 
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
 }
@@ -122,4 +131,8 @@ body {
 
 .animate-slide-in-right {
   animation: slideInRight 0.8s ease-out forwards;
+}
+
+.animate-shine {
+  animation: shine 1.5s ease-in-out;
 }
