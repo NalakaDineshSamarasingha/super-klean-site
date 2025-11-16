@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, loading, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   // Debug: Log user state
   useEffect(() => {
@@ -59,22 +60,64 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8 text-sm font-medium tracking-wider uppercase">
-            <Link href="/" className="text-white hover:text-[#FF5733] transition-colors border-b-2 border-[#FF5733] pb-1">
+            <Link 
+              href="/" 
+              className={`transition-colors ${
+                pathname === '/' 
+                  ? 'text-white border-b-2 border-[#FF5733] pb-1' 
+                  : 'text-gray-300 hover:text-[#FF5733]'
+              }`}
+            >
               Home
             </Link>
-            <Link href="/services" className="text-gray-300 hover:text-[#FF5733] transition-colors">
+            <Link 
+              href="/services" 
+              className={`transition-colors ${
+                pathname === '/services' 
+                  ? 'text-white border-b-2 border-[#FF5733] pb-1' 
+                  : 'text-gray-300 hover:text-[#FF5733]'
+              }`}
+            >
               Services
             </Link>
-            <Link href="/plans" className="text-gray-300 hover:text-[#FF5733] transition-colors">
+            <Link 
+              href="/plans" 
+              className={`transition-colors ${
+                pathname === '/plans' 
+                  ? 'text-white border-b-2 border-[#FF5733] pb-1' 
+                  : 'text-gray-300 hover:text-[#FF5733]'
+              }`}
+            >
               Plans
             </Link>
-            <Link href="/testimonials" className="text-gray-300 hover:text-[#FF5733] transition-colors">
+            <Link 
+              href="/testimonials" 
+              className={`transition-colors ${
+                pathname === '/testimonials' 
+                  ? 'text-white border-b-2 border-[#FF5733] pb-1' 
+                  : 'text-gray-300 hover:text-[#FF5733]'
+              }`}
+            >
               Testimonials
             </Link>
-            <Link href="/location" className="text-gray-300 hover:text-[#FF5733] transition-colors">
+            <Link 
+              href="/location" 
+              className={`transition-colors ${
+                pathname === '/location' 
+                  ? 'text-white border-b-2 border-[#FF5733] pb-1' 
+                  : 'text-gray-300 hover:text-[#FF5733]'
+              }`}
+            >
               Location
             </Link>
-            <Link href="/faqs" className="text-gray-300 hover:text-[#FF5733] transition-colors">
+            <Link 
+              href="/faqs" 
+              className={`transition-colors ${
+                pathname === '/faqs' 
+                  ? 'text-white border-b-2 border-[#FF5733] pb-1' 
+                  : 'text-gray-300 hover:text-[#FF5733]'
+              }`}
+            >
               FAQs
             </Link>
           </div>
@@ -146,42 +189,54 @@ export default function Navbar() {
           <div className="px-4 pt-2 pb-4 space-y-2">
             <Link
               href="/"
-              className="block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm"
+              className={`block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm ${
+                pathname === '/' ? 'text-[#FF5733] font-bold' : ''
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               href="/services"
-              className="block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm"
+              className={`block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm ${
+                pathname === '/services' ? 'text-[#FF5733] font-bold' : ''
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Services
             </Link>
             <Link
               href="/plans"
-              className="block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm"
+              className={`block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm ${
+                pathname === '/plans' ? 'text-[#FF5733] font-bold' : ''
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Plans
             </Link>
             <Link
               href="/testimonials"
-              className="block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm"
+              className={`block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm ${
+                pathname === '/testimonials' ? 'text-[#FF5733] font-bold' : ''
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Testimonials
             </Link>
             <Link
               href="/location"
-              className="block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm"
+              className={`block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm ${
+                pathname === '/location' ? 'text-[#FF5733] font-bold' : ''
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Location
             </Link>
             <Link
               href="/faqs"
-              className="block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm"
+              className={`block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm ${
+                pathname === '/faqs' ? 'text-[#FF5733] font-bold' : ''
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               FAQs
