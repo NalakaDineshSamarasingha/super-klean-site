@@ -138,7 +138,7 @@ export default function ServicesPage() {
               <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-20 w-12 sm:w-16 h-0.5 bg-[#FF5733] hidden lg:block"></div>
               
               {/* Main text */}
-              <div className="bg-gradient-to-r from-gray-900/40 via-gray-800/60 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-lg p-6 sm:p-8 md:p-10 lg:px-24 lg:py-12">
+              <div className="bg-linear-to-r from-gray-900/40 via-gray-800/60 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-lg p-6 sm:p-8 md:p-10 lg:px-24 lg:py-12">
                 <p className="text-gray-200 text-lg sm:text-xl md:text-2xl leading-relaxed text-center">
                   Discover our comprehensive range of professional services
                   <span className="block mt-3 text-[#FF5733] font-semibold tracking-wide text-xl sm:text-2xl">
