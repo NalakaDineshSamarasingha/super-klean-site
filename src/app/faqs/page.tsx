@@ -128,7 +128,7 @@ export default function FAQsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-gray-200 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4"
+            className="text-lg sm:text-xl md:text-2xl text-gray-400 leading-relaxed"
           >
             Find answers to the most common questions about our services
           </motion.p>
