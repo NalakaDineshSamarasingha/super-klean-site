@@ -41,7 +41,13 @@ export default function BookingPage() {
     preferredTime: '',
     specialNotes: ''
   });
+  const [reviewData, setReviewData] = useState({
+    rating: 5,
+    comment: '',
+    service: '',
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false);
@@ -174,6 +180,52 @@ export default function BookingPage() {
       alert(errorMessage);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user) {
+      alert('Please log in to submit a review');
+      return;
+    }
+
+    setIsSubmittingReview(true);
+
+    try {
+      const response = await fetch('/api/reviews/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.uid,
+          rating: reviewData.rating,
+          comment: reviewData.comment,
+          service: reviewData.service,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit review');
+      }
+
+      alert('Review submitted successfully! It will be visible after admin approval.');
+      
+      // Reset review form
+      setReviewData({
+        rating: 5,
+        comment: '',
+        service: '',
+      });
+    } catch (error: any) {
+      console.error('Error submitting review:', error);
+      alert(error.message || 'Failed to submit review. Please try again.');
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -335,8 +387,9 @@ export default function BookingPage() {
           </div>
         </motion.div>
 
-        {/* Success Message */}
-        <AnimatePresence>
+        {/* Success and Content Area */}
+        <div className="space-y-0">
+          <AnimatePresence>
           {showSuccess && (
             <motion.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -365,10 +418,8 @@ export default function BookingPage() {
           )}
         </AnimatePresence>
 
-        {/* Content Area */}
         <AnimatePresence mode="wait">
-          {activeTab === 'new' ? (
-            /* New Booking Form */
+          {activeTab === 'new' && (
             <motion.div
               key="new-booking"
               initial={{ opacity: 0, y: 30 }}
@@ -762,8 +813,9 @@ export default function BookingPage() {
           </motion.div>
         </div>
       </motion.div>
-          ) : (
-            /* My Bookings Section */
+          )}
+
+          {activeTab === 'history' && (
             <motion.div
               key="booking-history"
               initial={{ opacity: 0, y: 30 }}
@@ -963,6 +1015,7 @@ export default function BookingPage() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </div>
     </div>
   );
