@@ -47,19 +47,19 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black text-white flex justify-center">
-      <div className="w-[95%] px-6 lg:px-8">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black text-white flex justify-center font-[family-name:var(--font-teko)]">
+      <div className="w-[95%]">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center">
             
             <Link href="/" className="text-xl font-bold tracking-wider uppercase">
-              Super Klean
+              Super Kleen
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8 text-sm font-medium tracking-wider uppercase">
+          <div className="hidden lg:flex items-center gap-8 text-md font-medium tracking-wider uppercase">
             <Link 
               href="/" 
               className={`transition-colors ${
@@ -143,7 +143,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="px-6 py-2.5 text-white hover:text-[#FF5733] transition-colors font-medium tracking-wide uppercase text-sm"
+                  className="px-6 py-2.5 text-white hover:text-[#FF5733] transition-colors font-medium tracking-wide uppercase text-md"
                 >
                   Login
                 </Link>
