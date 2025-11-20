@@ -106,22 +106,22 @@ export default function ServicesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-10 w-[90%] mx-auto px-6 lg:px-8 py-20 text-center"
+          className="relative z-10 container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center"
         >
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="border-l-4 border-[#FF5733] pl-4 inline-block mb-6"
+            className="border-l-4 border-[#FF5733] pl-4 inline-block mb-4 sm:mb-6"
           >
-            <p className="text-gray-300 uppercase tracking-wider text-sm">Quality and care in every service</p>
+            <p className="text-gray-300 uppercase tracking-wider text-xs sm:text-sm">Quality and care in every service</p>
           </motion.div>
           
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-black tracking-wider leading-tight uppercase font-(family-name:--font-teko) mb-8"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-wider leading-tight uppercase font-(family-name:--font-teko) mb-6 sm:mb-8 px-4"
           >
             OUR <span className="text-[#FF5733]">SERVICES</span>
           </motion.h1>
@@ -130,35 +130,35 @@ export default function ServicesPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="max-w-3xl mx-auto"
+            className="w-full flex justify-center items-center px-4"
           >
-            <div className="relative">
+            <div className="relative max-w-4xl w-full">
               {/* Decorative lines */}
-              <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-12 h-0.5 bg-[#FF5733] hidden md:block"></div>
-              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-12 h-0.5 bg-[#FF5733] hidden md:block"></div>
+              <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-20 w-12 sm:w-16 h-0.5 bg-[#FF5733] hidden lg:block"></div>
+              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-20 w-12 sm:w-16 h-0.5 bg-[#FF5733] hidden lg:block"></div>
               
               {/* Main text */}
-              <div className="bg-gradient-to-r from-gray-900/40 via-gray-800/60 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-lg p-6 md:px-20">
-                <p className="text-gray-200 text-lg md:text-xl leading-relaxed text-center">
+              <div className="bg-linear-to-r from-gray-900/40 via-gray-800/60 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-lg p-6 sm:p-8 md:p-10 lg:px-24 lg:py-12">
+                <p className="text-gray-200 text-lg sm:text-xl md:text-2xl leading-relaxed text-center">
                   Discover our comprehensive range of professional services
-                  <span className="block mt-2 text-[#FF5733] font-semibold tracking-wide">
+                  <span className="block mt-3 text-[#FF5733] font-semibold tracking-wide text-xl sm:text-2xl">
                     Crafted with Quality and Care
                   </span>
                 </p>
                 
                 {/* Stats or highlights */}
-                <div className="flex flex-wrap justify-center gap-8 mt-6 pt-6 border-t border-gray-700/50">
+                <div className="flex flex-wrap justify-center gap-8 sm:gap-12 md:gap-16 mt-8 pt-8 border-t border-gray-700/50">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#FF5733]">6+</div>
-                    <div className="text-xs uppercase tracking-wider text-gray-400">Services</div>
+                    <div className="text-3xl sm:text-4xl font-bold text-[#FF5733] mb-1">6+</div>
+                    <div className="text-xs sm:text-sm uppercase tracking-wider text-gray-400">Services</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#FF5733]">100%</div>
-                    <div className="text-xs uppercase tracking-wider text-gray-400">Quality</div>
+                    <div className="text-3xl sm:text-4xl font-bold text-[#FF5733] mb-1">100%</div>
+                    <div className="text-xs sm:text-sm uppercase tracking-wider text-gray-400">Quality</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#FF5733]">Expert</div>
-                    <div className="text-xs uppercase tracking-wider text-gray-400">Team</div>
+                    <div className="text-3xl sm:text-4xl font-bold text-[#FF5733] mb-1">Expert</div>
+                    <div className="text-xs sm:text-sm uppercase tracking-wider text-gray-400">Team</div>
                   </div>
                 </div>
               </div>
@@ -169,8 +169,8 @@ export default function ServicesPage() {
 
       {/* Services Grid */}
       <section className="py-16 lg:py-24">
-        <div className="w-[90%] mx-auto px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 justify-items-center">
             {services.map((service, index) => (
               <motion.div
                 key={index}
@@ -178,7 +178,7 @@ export default function ServicesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group bg-linear-to-br from-gray-900 to-black border border-gray-800 hover:border-[#FF5733] transition-all duration-500 p-8 relative overflow-hidden hover:shadow-2xl hover:shadow-[#FF5733]/20"
+                className="w-full max-w-sm group bg-linear-to-br from-gray-900 to-black border border-gray-800 hover:border-[#FF5733] transition-all duration-500 p-6 sm:p-8 relative overflow-hidden hover:shadow-2xl hover:shadow-[#FF5733]/20"
               >
                 {/* Hover Effect Background */}
                 <div className="absolute inset-0 bg-linear-to-br from-[#FF5733]/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
@@ -260,35 +260,35 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-linear-to-b from-black to-gray-900">
+      <section className="py-16 sm:py-20 bg-linear-to-b from-black to-gray-900">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="w-[90%] mx-auto px-6 lg:px-8 text-center"
+          className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         >
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-wider mb-6 font-(family-name:--font-teko)">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider mb-4 sm:mb-6 font-(family-name:--font-teko) px-4">
               Ready to Give Your Vehicle the <span className="text-[#FF5733]">Best Care</span>?
             </h2>
-            <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+            <p className="text-gray-300 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed px-4">
               Choose from our range of professional services and let our expert team take care of your vehicle with precision and care.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                 <Link
                   href="/contact"
-                  className="group relative inline-block px-10 py-4 bg-[#FF5733] text-white font-bold text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 text-center"
+                  className="group relative inline-block w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-[#FF5733] text-white font-bold text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 text-center"
                 >
                   <span className="relative z-10">Book Now</span>
                   <div className="absolute inset-0 bg-[#E64A2E] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                 <Link
                   href="/plans"
-                  className="group relative inline-block px-10 py-4 border-2 border-white text-white font-bold text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 text-center"
+                  className="group relative inline-block w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 border-2 border-white text-white font-bold text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 text-center"
                 >
                   <span className="relative z-10 group-hover:text-black transition-colors duration-300">View Plans</span>
                   <div className="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
@@ -300,45 +300,45 @@ export default function ServicesPage() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-20 bg-black">
-        <div className="w-[90%] mx-auto px-6 lg:px-8">
+      <section className="py-16 sm:py-20 bg-black">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
-            <div className="border-l-4 border-[#FF5733] pl-4 inline-block mb-6">
-              <p className="text-gray-300 uppercase tracking-wider text-sm">Why Super Klean</p>
+            <div className="border-l-4 border-[#FF5733] pl-4 inline-block mb-4 sm:mb-6">
+              <p className="text-gray-300 uppercase tracking-wider text-xs sm:text-sm">Why Super Klean</p>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-wider font-(family-name:--font-teko)">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider font-(family-name:--font-teko) px-4">
               Our <span className="text-[#FF5733]">Commitment</span>
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
               whileHover={{ y: -10 }}
-              className="text-center p-8 bg-gray-900/50 border border-gray-800 hover:border-[#FF5733] transition-all duration-500 group hover:shadow-xl hover:shadow-[#FF5733]/20"
+              className="text-center p-6 sm:p-8 bg-gray-900/50 border border-gray-800 hover:border-[#FF5733] transition-all duration-500 group hover:shadow-xl hover:shadow-[#FF5733]/20"
             >
               <motion.div 
                 whileHover={{ scale: 1.1, rotate: 360 }}
                 transition={{ duration: 0.6 }}
                 className="inline-block mb-4 text-[#FF5733]"
               >
-                <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 sm:w-16 sm:h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
               </motion.div>
-              <h3 className="text-xl font-bold uppercase tracking-wider mb-3 text-white group-hover:text-[#FF5733] transition-colors duration-300">
+              <h3 className="text-lg sm:text-xl font-bold uppercase tracking-wider mb-3 text-white group-hover:text-[#FF5733] transition-colors duration-300">
                 Quality Service
               </h3>
-              <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+              <p className="text-sm sm:text-base text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                 We use premium products and advanced techniques to ensure the best results for your vehicle.
               </p>
             </motion.div>
@@ -349,21 +349,21 @@ export default function ServicesPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
               whileHover={{ y: -10 }}
-              className="text-center p-8 bg-gray-900/50 border border-gray-800 hover:border-[#FF5733] transition-all duration-500 group hover:shadow-xl hover:shadow-[#FF5733]/20"
+              className="text-center p-6 sm:p-8 bg-gray-900/50 border border-gray-800 hover:border-[#FF5733] transition-all duration-500 group hover:shadow-xl hover:shadow-[#FF5733]/20"
             >
               <motion.div 
                 whileHover={{ scale: 1.1, rotate: 360 }}
                 transition={{ duration: 0.6 }}
                 className="inline-block mb-4 text-[#FF5733]"
               >
-                <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 sm:w-16 sm:h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </motion.div>
-              <h3 className="text-xl font-bold uppercase tracking-wider mb-3 text-white group-hover:text-[#FF5733] transition-colors duration-300">
+              <h3 className="text-lg sm:text-xl font-bold uppercase tracking-wider mb-3 text-white group-hover:text-[#FF5733] transition-colors duration-300">
                 Fast & Efficient
               </h3>
-              <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+              <p className="text-sm sm:text-base text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                 Our experienced team delivers professional service without compromising on quality or speed.
               </p>
             </motion.div>
@@ -374,21 +374,21 @@ export default function ServicesPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
               whileHover={{ y: -10 }}
-              className="text-center p-8 bg-gray-900/50 border border-gray-800 hover:border-[#FF5733] transition-all duration-500 group hover:shadow-xl hover:shadow-[#FF5733]/20"
+              className="text-center p-6 sm:p-8 bg-gray-900/50 border border-gray-800 hover:border-[#FF5733] transition-all duration-500 group hover:shadow-xl hover:shadow-[#FF5733]/20"
             >
               <motion.div 
                 whileHover={{ scale: 1.1, rotate: 360 }}
                 transition={{ duration: 0.6 }}
                 className="inline-block mb-4 text-[#FF5733]"
               >
-                <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 sm:w-16 sm:h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </motion.div>
-              <h3 className="text-xl font-bold uppercase tracking-wider mb-3 text-white group-hover:text-[#FF5733] transition-colors duration-300">
+              <h3 className="text-lg sm:text-xl font-bold uppercase tracking-wider mb-3 text-white group-hover:text-[#FF5733] transition-colors duration-300">
                 Customer Satisfaction
               </h3>
-              <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+              <p className="text-sm sm:text-base text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                 Your satisfaction is our priority. We go the extra mile to exceed your expectations.
               </p>
             </motion.div>
