@@ -35,7 +35,7 @@ export default function Hero() {
           {/* Right Content */}
           <div className="space-y-6 lg:text-right">
             <p className="text-gray-200 text-lg leading-relaxed max-w-xl lg:ml-auto">
-              Welcome to Super Klean! Our values are rooted in trust, integrity, and a relentless pursuit of excellence. We are not just a service provider; we are your automotive partners, committed to ensuring your vehicle's performance and longevity.
+              Welcome to Super Kleen! Our values are rooted in trust, integrity, and a relentless pursuit of excellence. We are not just a service provider; we are your automotive partners, committed to ensuring your vehicle's performance and longevity.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4 lg:justify-end">

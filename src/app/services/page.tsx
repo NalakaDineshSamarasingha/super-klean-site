@@ -310,7 +310,7 @@ export default function ServicesPage() {
             className="text-center mb-12 sm:mb-16"
           >
             <div className="border-l-4 border-[#FF5733] pl-4 inline-block mb-4 sm:mb-6">
-              <p className="text-gray-300 uppercase tracking-wider text-xs sm:text-sm">Why Super Klean</p>
+              <p className="text-gray-300 uppercase tracking-wider text-xs sm:text-sm">Why Super Kleen</p>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider font-(family-name:--font-teko) px-4">
               Our <span className="text-[#FF5733]">Commitment</span>

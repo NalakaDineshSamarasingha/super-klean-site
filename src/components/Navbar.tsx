@@ -54,7 +54,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-3">
             
             <Link href="/" className="text-xl font-bold tracking-wider uppercase">
-              Super Klean
+              Super Kleen
             </Link>
           </div>
 

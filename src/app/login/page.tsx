@@ -150,7 +150,7 @@ export default function LoginPage() {
         {/* Right side - Branding */}
         <div className="flex-1 hidden md:flex items-center justify-center p-8">
           <div className="text-center">
-            <h1 className="text-8xl font-bold text-[#FF5733] tracking-wider font-[family-name:var(--font-teko)]">SUPERKLEAN</h1>
+            <h1 className="text-8xl font-bold text-[#FF5733] tracking-wider font-[family-name:var(--font-teko)]">SUPERKLEEN</h1>
             <p className="text-2xl text-white mt-4 tracking-wide">VEHICLE SERVICE CENTER</p>
           </div>
         </div>
