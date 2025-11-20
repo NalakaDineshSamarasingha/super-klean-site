@@ -288,7 +288,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="mb-8 flex gap-4">
+        <div className="mb-8 flex gap-4 pt-10">
           <button
             onClick={() => setActiveTab('bookings')}
             className={`px-6 py-3 rounded-lg font-medium transition-all ${
