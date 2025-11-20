@@ -129,15 +129,6 @@ export default function PlansPage() {
                   
                   {/* Card Content */}
                   <div className="p-6 sm:p-8 relative z-10">
-                    {/* Icon */}
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-[#FF5733] mb-6 flex justify-center"
-                    >
-                      {plan.icon}
-                    </motion.div>
-
                     {/* Plan Name */}
                     <h3 className="text-2xl sm:text-3xl font-bold text-center mb-3 font-[--font-teko] tracking-wide">
                       {plan.name}
@@ -205,13 +196,13 @@ export default function PlansPage() {
 
       {/* Monthly Membership Section */}
       <section className="py-12 sm:py-16 md:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative bg-linear-to-br from-[#FF5733] to-[#E64A2E] rounded-3xl overflow-hidden p-8 sm:p-10 md:p-12 shadow-2xl shadow-[#FF5733]/30"
+            className="relative bg-linear-to-br from-[#FF5733] to-[#E64A2E] rounded-2xl overflow-hidden p-6 sm:p-8 shadow-xl shadow-[#FF5733]/20"
           >
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
@@ -221,54 +212,37 @@ export default function PlansPage() {
               }}></div>
             </div>
 
-            {/* Animated Circles */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/20 rounded-full blur-2xl"></div>
-
             <div className="relative z-10 text-center">
-              {/* Icon */}
-              <motion.div
-                initial={{ scale: 0 }}
-                whileInView={{ scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-block mb-6"
-              >
-                <svg className="w-16 h-16 sm:w-20 sm:h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                </svg>
-              </motion.div>
-
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 font-[--font-teko] tracking-wide">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 font-[--font-teko] tracking-wide">
                 Monthly Membership
               </h2>
               
-              <p className="text-white/90 text-lg sm:text-xl mb-6 max-w-2xl mx-auto">
+              <p className="text-white/90 text-base sm:text-lg mb-6">
                 Maintain your vehicle with monthly care
               </p>
 
-              <div className="bg-white/20 backdrop-blur-md rounded-2xl p-6 sm:p-8 mb-8 max-w-2xl mx-auto border border-white/30 shadow-xl">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <div className="bg-white/20 backdrop-blur-md rounded-xl p-4 sm:p-6 mb-6 border border-white/30">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white font-[--font-teko]">
+                  <h3 className="text-lg sm:text-xl font-bold text-white font-[--font-teko]">
                     SPECIAL OFFER
                   </h3>
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 </div>
-                <p className="text-white text-lg sm:text-xl leading-relaxed">
-                  Get <span className="font-bold text-2xl sm:text-3xl px-2 py-1 bg-white/20 rounded-lg">1 FREE</span> body wash for every{' '}
-                  <span className="font-bold text-2xl sm:text-3xl px-2 py-1 bg-white/20 rounded-lg">5</span> washes
+                <p className="text-white text-base sm:text-lg leading-relaxed">
+                  Get <span className="font-bold text-xl sm:text-2xl px-2 py-1 bg-white/20 rounded-lg">1 FREE</span> body wash for every{' '}
+                  <span className="font-bold text-xl sm:text-2xl px-2 py-1 bg-white/20 rounded-lg">5</span> washes
                 </p>
               </div>
 
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative bg-white text-[#FF5733] px-8 sm:px-10 py-3 sm:py-4 rounded-xl font-bold text-lg sm:text-xl tracking-wide hover:bg-gray-100 transition-all duration-300 shadow-2xl group/join overflow-hidden"
+                className="relative bg-white text-[#FF5733] px-6 sm:px-8 py-3 rounded-lg font-bold text-base sm:text-lg tracking-wide hover:bg-gray-100 transition-all duration-300 shadow-lg group/join overflow-hidden"
               >
                 <span className="relative z-10">JOIN NOW</span>
                 <div className="absolute inset-0 bg-linear-to-r from-transparent via-[#FF5733]/10 to-transparent -translate-x-full group-hover/join:translate-x-full transition-transform duration-700"></div>
