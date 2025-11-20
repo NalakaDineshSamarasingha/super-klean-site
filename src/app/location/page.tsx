@@ -82,7 +82,7 @@ export default function LocationPage() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-wider leading-tight uppercase font-(family-name:--font-teko) mb-4 sm:mb-6 px-4"
           >
-            VISIT <span className="text-[#FF5733]">SUPER KLEAN</span>
+            VISIT <span className="text-[#FF5733]">SUPER KLEEN</span>
           </motion.h1>
 
           <motion.p
@@ -143,7 +143,7 @@ export default function LocationPage() {
                         Address
                       </h3>
                       <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-                        Super Klean Car Wash
+                        Super Kleen Car Wash
                         <br />
                         <span className="text-gray-400">
                           4 Pirivena Rd, Dehiwala-Mount Lavinia 10350
