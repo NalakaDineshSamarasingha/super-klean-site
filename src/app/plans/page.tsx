@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface Plan {
   name: string;
@@ -63,6 +65,18 @@ const plans: Plan[] = [
 ];
 
 export default function PlansPage() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleBooking = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      router.push('/login');
+    } else {
+      router.push('/booking');
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black text-white pt-20">
       {/* Hero Section */}
@@ -175,9 +189,10 @@ export default function PlansPage() {
 
                     {/* Book Now Button */}
                     <motion.button
+                      onClick={handleBooking}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`relative w-full py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg tracking-wide transition-all duration-300 overflow-hidden group/btn ${
+                      className={`relative w-full py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg tracking-wide transition-all duration-300 overflow-hidden group/btn cursor-pointer ${
                         plan.isPopular
                           ? 'bg-[#FF5733] text-white hover:bg-[#E64A2E] shadow-lg shadow-[#FF5733]/30'
                           : 'bg-transparent border-2 border-[#FF5733] text-[#FF5733] hover:bg-[#FF5733] hover:text-white'

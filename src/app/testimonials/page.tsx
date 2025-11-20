@@ -1,6 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface Testimonial {
   name: string;
@@ -47,6 +50,19 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
 );
 
 export default function TestimonialsPage() {
+  const { user } = useAuth();
+  const router = useRouter();
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+  const handleBooking = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      router.push('/login');
+    } else {
+      router.push('/booking');
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black text-white pt-20">
       {/* Hero Section */}
@@ -271,9 +287,10 @@ export default function TestimonialsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <motion.button
+                onClick={handleBooking}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative bg-[#FF5733] text-white px-8 py-3 rounded-xl font-semibold text-lg hover:bg-[#E64A2E] transition-all duration-300 w-full sm:w-auto shadow-lg shadow-[#FF5733]/30 overflow-hidden group/book"
+                className="relative bg-[#FF5733] text-white px-8 py-3 rounded-xl font-semibold text-lg hover:bg-[#E64A2E] transition-all duration-300 w-full sm:w-auto shadow-lg shadow-[#FF5733]/30 overflow-hidden group/book cursor-pointer"
               >
                 <span className="relative z-10">BOOK NOW</span>
                 <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/book:translate-y-0 transition-transform duration-300"></div>

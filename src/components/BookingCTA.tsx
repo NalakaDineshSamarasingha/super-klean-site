@@ -1,7 +1,22 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function BookingCTA() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleBooking = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      router.push('/login');
+    } else {
+      router.push('/booking');
+    }
+  };
   return (
     <section className="relative min-h-[600px] flex items-center justify-center bg-black text-white overflow-hidden">
       {/* Background Image */}
@@ -36,12 +51,12 @@ export default function BookingCTA() {
 
           {/* CTA Button */}
           <div>
-            <Link
-              href="/booking"
-              className="inline-flex items-center justify-center px-12 py-5 bg-[#FF5733] text-white font-bold text-lg uppercase tracking-wider hover:bg-[#E64A2E] transition-all duration-300 shadow-lg hover:shadow-xl"
+            <button
+              onClick={handleBooking}
+              className="inline-flex items-center justify-center px-12 py-5 bg-[#FF5733] text-white font-bold text-lg uppercase tracking-wider hover:bg-[#E64A2E] transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
             >
               LET'S GET STARTED!
-            </Link>
+            </button>
           </div>
         </div>
       </div>
