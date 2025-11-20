@@ -1,19 +1,19 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-black text-white pt-20">
-      {/* Background Image */}
+      {/* Background Video */}
       <div className="absolute inset-0">
-        <Image
-          src="/bg.jpg"
-          alt="Vehicle service background"
-          fill
-          className="object-cover opacity-60"
-          priority
-          quality={100}
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-60"
+        >
+          <source src="/intro.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40"></div>
       </div>
       
