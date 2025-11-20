@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 interface Booking {
   id: string;
+  userId: string;
   fullName: string;
   phoneNumber: string;
   vehicleNumber: string;
@@ -44,50 +45,50 @@ export default function BookingPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false);
-  const [bookings, setBookings] = useState<Booking[]>([
-    {
-      id: '1',
-      fullName: 'John Doe',
-      phoneNumber: '+94 77 123 4567',
-      vehicleNumber: 'ABC-1234',
-      service: 'premium',
-      preferredDate: '2025-11-25',
-      preferredTime: '10:00',
-      specialNotes: 'Please focus on interior cleaning',
-      status: 'pending',
-      createdAt: new Date('2025-11-20'),
-    },
-    {
-      id: '2',
-      fullName: 'Jane Smith',
-      phoneNumber: '+94 77 987 6543',
-      vehicleNumber: 'XYZ-5678',
-      service: 'gold',
-      preferredDate: '2025-11-18',
-      preferredTime: '14:00',
-      specialNotes: 'Complete detailing needed',
-      status: 'approved',
-      createdAt: new Date('2025-11-15'),
-    },
-    {
-      id: '3',
-      fullName: 'Mike Johnson',
-      phoneNumber: '+94 77 555 1234',
-      vehicleNumber: 'DEF-9012',
-      service: 'basic',
-      preferredDate: '2025-11-10',
-      preferredTime: '09:00',
-      specialNotes: '',
-      status: 'completed',
-      createdAt: new Date('2025-11-08'),
-    },
-  ]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  // Fetch bookings from API
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (!user) {
+        setIsLoadingBookings(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/bookings/list?userId=${user.uid}`);
+        const result = await response.json();
+
+        console.log('Fetch response:', { status: response.status, result });
+
+        if (!response.ok) {
+          console.error('Failed to fetch bookings:', result.error);
+          throw new Error(result.error || 'Failed to fetch bookings');
+        }
+
+        const fetchedBookings: Booking[] = result.bookings.map((booking: any) => ({
+          ...booking,
+          createdAt: new Date(booking.createdAt),
+        }));
+        
+        console.log('Fetched bookings:', fetchedBookings);
+        setBookings(fetchedBookings);
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      } finally {
+        setIsLoadingBookings(false);
+      }
+    };
+
+    fetchBookings();
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -99,39 +100,81 @@ export default function BookingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      alert('Please log in to create a booking');
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const bookingData = {
+        userId: user.uid,
+        email: user.email || '',
+        fullName: formData.fullName,
+        phoneNumber: formData.phoneNumber,
+        vehicleNumber: formData.vehicleNumber,
+        service: formData.service,
+        preferredDate: formData.preferredDate,
+        preferredTime: formData.preferredTime,
+        specialNotes: formData.specialNotes,
+      };
 
-    // Add new booking
-    const newBooking: Booking = {
-      id: Date.now().toString(),
-      ...formData,
-      status: 'pending',
-      createdAt: new Date(),
-    };
+      const response = await fetch('/api/bookings/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
 
-    setBookings(prev => [newBooking, ...prev]);
-    setIsSubmitting(false);
-    setShowSuccess(true);
+      const result = await response.json();
 
-    // Reset form
-    setFormData({
-      fullName: '',
-      phoneNumber: '',
-      vehicleNumber: '',
-      service: '',
-      preferredDate: '',
-      preferredTime: '',
-      specialNotes: ''
-    });
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create booking');
+      }
 
-    // Hide success message and switch to history tab after 3 seconds
-    setTimeout(() => {
-      setShowSuccess(false);
-      setActiveTab('history');
-    }, 3000);
+      console.log('Booking created successfully with ID:', result.bookingId);
+
+      // Add new booking to local state
+      const newBooking: Booking = {
+        id: result.bookingId,
+        userId: user.uid,
+        ...formData,
+        status: 'pending',
+        createdAt: new Date(),
+      };
+
+      setBookings(prev => [newBooking, ...prev]);
+      setShowSuccess(true);
+
+      // Reset form
+      setFormData({
+        fullName: '',
+        phoneNumber: '',
+        vehicleNumber: '',
+        service: '',
+        preferredDate: '',
+        preferredTime: '',
+        specialNotes: ''
+      });
+
+      // Hide success message and switch to history tab after 3 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+        setActiveTab('history');
+      }, 3000);
+    } catch (error: any) {
+      console.error('Error creating booking:', error);
+      
+      let errorMessage = 'Failed to create booking. ';
+      errorMessage += error.message || 'Please try again.';
+      
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -729,7 +772,16 @@ export default function BookingPage() {
               transition={{ duration: 0.5 }}
               className="space-y-5"
             >
-              {bookings.length === 0 ? (
+              {isLoadingBookings ? (
+                <div className="text-center py-20">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-16 h-16 border-4 border-[#FF5733] border-t-transparent rounded-full mx-auto mb-5"
+                  ></motion.div>
+                  <p className="text-gray-400">Loading your bookings...</p>
+                </div>
+              ) : bookings.length === 0 ? (
                 <div className="text-center py-20">
                   <motion.div
                     initial={{ scale: 0 }}
