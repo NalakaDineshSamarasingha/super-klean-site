@@ -10,6 +10,8 @@ import Navbar from "@/components/Navbar";
 
 export default function SignupPage() {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,9 +26,12 @@ export default function SignupPage() {
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [mobileError, setMobileError] = useState<string | null>(null);
 
   const isFormValid = () => {
     if (
+      !fullName.trim() ||
+      !mobileNumber.trim() ||
       !username.trim() ||
       !email.trim() ||
       !password.trim() ||
@@ -37,7 +42,7 @@ export default function SignupPage() {
     if (password !== confirmPassword) {
       return false;
     }
-    if (usernameError || passwordError || emailError) {
+    if (usernameError || passwordError || emailError || mobileError) {
       return false;
     }
     if (usernameAvailable === false) {
@@ -129,14 +134,34 @@ export default function SignupPage() {
     }
   };
 
+  const handleMobileBlur = () => {
+    if (!mobileNumber.trim()) {
+      setMobileError(null);
+      return;
+    }
+    // Validate mobile number (exactly 10 digits)
+    const mobileRegex = /^\d{10}$/;
+    if (!mobileRegex.test(mobileNumber.replace(/\s/g, ''))) {
+      setMobileError("Please enter exactly 10 digits");
+    } else {
+      setMobileError(null);
+    }
+  };
+
   const handleRegister = async () => {
-    if (!username || !email || !password || !confirmPassword) {
+    if (!fullName || !mobileNumber || !username || !email || !password || !confirmPassword) {
       toast.error("Please fill all fields");
       return;
     }
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
+      return;
+    }
+
+    // Check mobile validation
+    if (mobileError) {
+      toast.error("Please fix the mobile number validation error");
       return;
     }
 
@@ -199,6 +224,8 @@ export default function SignupPage() {
       
       // Store signup data in sessionStorage to use after verification
       sessionStorage.setItem('signupData', JSON.stringify({
+        fullName,
+        mobileNumber,
         username,
         email,
         password
@@ -239,6 +266,56 @@ export default function SignupPage() {
               Sign up for an account
             </h2>
             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              {/* Full Name */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="fullName"
+                  className="block text-sm font-medium text-white"
+                >
+                  Full Name *
+                </label>
+                <input
+                  id="fullName"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Enter your full name"
+                  className="mt-1 block w-full px-3 py-2 border border-white/20 rounded-md shadow-sm bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733]"
+                  required
+                />
+              </div>
+
+              {/* Mobile Number */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="mobileNumber"
+                  className="block text-sm font-medium text-white"
+                >
+                  Mobile Number *
+                </label>
+                <input
+                  id="mobileNumber"
+                  type="tel"
+                  value={mobileNumber}
+                  onChange={(e) => {
+                    setMobileNumber(e.target.value);
+                    setMobileError(null);
+                  }}
+                  onBlur={handleMobileBlur}
+                  placeholder="Enter your mobile number"
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-[#FF5733] focus:border-[#FF5733] ${
+                    mobileError
+                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                      : "border-white/20"
+                  }`}
+                  required
+                />
+                {mobileError && (
+                  <p className="mt-1 text-sm text-red-600">{mobileError}</p>
+                )}
+              </div>
+
+              {/* Username */}
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="username"

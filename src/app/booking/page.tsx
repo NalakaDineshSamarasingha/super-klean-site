@@ -60,6 +60,30 @@ export default function BookingPage() {
     }
   }, [user, loading, router]);
 
+  // Fetch user data from Firestore
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) return;
+
+      try {
+        const response = await fetch(`/api/users/${user.uid}`);
+        const result = await response.json();
+
+        if (response.ok && result.user) {
+          setFormData(prev => ({
+            ...prev,
+            fullName: result.user.fullName || '',
+            phoneNumber: result.user.mobileNumber || '',
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
+
   // Fetch bookings from API
   useEffect(() => {
     const fetchBookings = async () => {
@@ -455,16 +479,20 @@ export default function BookingPage() {
                     onFocus={() => setFocusedField('fullName')}
                     onBlur={() => setFocusedField(null)}
                     required
-                    className="w-full px-5 py-4 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#FF5733] focus:bg-white/10 transition-all duration-300 hover:border-white/20"
+                    readOnly
+                    className="w-full px-5 py-4 bg-white/5 border-2 border-white/10 rounded-xl text-gray-400 placeholder-gray-500 focus:outline-none cursor-not-allowed transition-all duration-300"
                     placeholder="Enter your full name"
                   />
                   {focusedField === 'fullName' && (
                     <motion.div
                       layoutId="focus-indicator"
-                      className="absolute -inset-0.5 bg-[#FF5733]/20 rounded-xl -z-10 blur-sm"
+                      className="absolute -inset-0.5 bg-gray-500/10 rounded-xl -z-10 blur-sm"
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                   )}
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/5 px-2 py-1 rounded text-xs text-gray-500">
+                    Read-only
+                  </div>
                 </div>
               </motion.div>
 
@@ -483,12 +511,19 @@ export default function BookingPage() {
                     id="phoneNumber"
                     name="phoneNumber"
                     value={formData.phoneNumber}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      if (value.length <= 10) {
+                        setFormData(prev => ({ ...prev, phoneNumber: value }));
+                      }
+                    }}
                     onFocus={() => setFocusedField('phoneNumber')}
                     onBlur={() => setFocusedField(null)}
                     required
+                    pattern="\d{10}"
+                    maxLength={10}
                     className="w-full px-5 py-4 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#FF5733] focus:bg-white/10 transition-all duration-300 hover:border-white/20"
-                    placeholder="+94 XX XXX XXXX"
+                    placeholder="10-digit mobile number"
                   />
                   {focusedField === 'phoneNumber' && (
                     <motion.div
@@ -497,7 +532,13 @@ export default function BookingPage() {
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                   )}
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-500">
+                    {formData.phoneNumber.length}/10
+                  </div>
                 </div>
+                {formData.phoneNumber && formData.phoneNumber.length !== 10 && (
+                  <p className="mt-1 text-xs text-yellow-400">Mobile number must be exactly 10 digits</p>
+                )}
               </motion.div>
 
               {/* Vehicle Number */}

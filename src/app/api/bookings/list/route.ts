@@ -52,6 +52,9 @@ export async function GET(request: NextRequest) {
         preferredTime: data.preferredTime || '',
         specialNotes: data.specialNotes || '',
         status: data.status || 'pending',
+        suggestedDate: data.suggestedDate || null,
+        suggestedTime: data.suggestedTime || null,
+        adminNote: data.adminNote || null,
         createdAt: data.createdAt?.toDate().toISOString() || new Date().toISOString(),
         updatedAt: data.updatedAt?.toDate().toISOString() || new Date().toISOString(),
       };
