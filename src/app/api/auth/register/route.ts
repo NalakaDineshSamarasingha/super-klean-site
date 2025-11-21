@@ -50,11 +50,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { username, email, password } = await request.json();
+    const { fullName, mobileNumber, username, email, password } = await request.json();
 
-    if (!username || !email || !password) {
+    if (!fullName || !mobileNumber || !username || !email || !password) {
       return NextResponse.json(
         { error: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate mobile number (exactly 10 digits)
+    const mobileRegex = /^\d{10}$/;
+    if (!mobileRegex.test(mobileNumber.replace(/\s/g, ''))) {
+      return NextResponse.json(
+        { error: "Mobile number must be exactly 10 digits" },
         { status: 400 }
       );
     }
@@ -72,11 +81,13 @@ export async function POST(request: NextRequest) {
     const userRecord = await adminAuth.createUser({
       email,
       password,
-      displayName: username,
+      displayName: fullName,
     });
 
     // Store user data in Firestore
     await adminDb.collection("users").doc(userRecord.uid).set({
+      fullName,
+      mobileNumber,
       username,
       email,
       role: "customer", // Default role for vehicle service customers

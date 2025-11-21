@@ -84,10 +84,12 @@ function VerifyEmailContent() {
         return;
       }
 
-      const { username, password } = JSON.parse(signupData);
+      const { fullName, mobileNumber, username, password } = JSON.parse(signupData);
 
       // Register the user
       await axios.post('/api/auth/register', {
+        fullName,
+        mobileNumber,
         username,
         email,
         password,
