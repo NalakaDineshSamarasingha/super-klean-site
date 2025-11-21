@@ -91,6 +91,16 @@ export default function Navbar() {
               Plans
             </Link>
             <Link 
+              href="/booking" 
+              className={`transition-colors ${
+                pathname === '/booking' 
+                  ? 'text-white border-b-2 border-[#FF5733] pb-1' 
+                  : 'text-gray-300 hover:text-[#FF5733]'
+              }`}
+            >
+              Booking
+            </Link>
+            <Link 
               href="/testimonials" 
               className={`transition-colors ${
                 pathname === '/testimonials' 
@@ -213,6 +223,15 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               Plans
+            </Link>
+            <Link
+              href="/booking"
+              className={`block px-4 py-3 hover:bg-white/10 transition-colors uppercase text-sm ${
+                pathname === '/booking' ? 'text-[#FF5733] font-bold' : ''
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Booking
             </Link>
             <Link
               href="/testimonials"

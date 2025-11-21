@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface Service {
   title: string;
@@ -84,6 +86,18 @@ const services: Service[] = [
 ];
 
 export default function ServicesPage() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleBooking = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      router.push('/login');
+    } else {
+      router.push('/booking');
+    }
+  };
+
   return (
     <main className="bg-black text-white min-h-screen">
       {/* Hero Section */}
@@ -277,13 +291,13 @@ export default function ServicesPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                <Link
-                  href="/contact"
-                  className="group relative inline-block w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-[#FF5733] text-white font-bold text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 text-center"
+                <button
+                  onClick={handleBooking}
+                  className="group relative inline-block w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-[#FF5733] text-white font-bold text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 text-center cursor-pointer"
                 >
                   <span className="relative z-10">Book Now</span>
                   <div className="absolute inset-0 bg-[#E64A2E] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-                </Link>
+                </button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                 <Link
@@ -310,7 +324,7 @@ export default function ServicesPage() {
             className="text-center mb-12 sm:mb-16"
           >
             <div className="border-l-4 border-[#FF5733] pl-4 inline-block mb-4 sm:mb-6">
-              <p className="text-gray-300 uppercase tracking-wider text-xs sm:text-sm">Why Super Klean</p>
+              <p className="text-gray-300 uppercase tracking-wider text-xs sm:text-sm">Why Super Kleen</p>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider font-(family-name:--font-teko) px-4">
               Our <span className="text-[#FF5733]">Commitment</span>

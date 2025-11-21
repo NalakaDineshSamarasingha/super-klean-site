@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
             <body>
               <div class="container">
                 <div class="header">
-                  <h1>SUPER KLEAN</h1>
+                  <h1>SUPER KLEEN</h1>
                 </div>
                 <div class="content">
                   <h2>Welcome, ${firstName}!</h2>
