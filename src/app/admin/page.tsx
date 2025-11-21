@@ -22,7 +22,10 @@ interface Booking {
   preferredDate: string;
   preferredTime: string;
   specialNotes: string;
-  status: 'pending' | 'approved' | 'rejected' | 'completed';
+  status: 'pending' | 'approved' | 'rejected' | 'completed' | 'suggestion_pending' | 'cancelled';
+  suggestedDate?: string;
+  suggestedTime?: string;
+  adminNote?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -44,16 +47,20 @@ interface Review {
 export default function AdminDashboard() {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'bookings' | 'reviews'>('bookings');
+  const [activeTab, setActiveTab] = useState<'bookings' | 'suggestions' | 'approved' | 'reviews'>('bookings');
   const [stats, setStats] = useState<Stats>({
     totalUsers: 0,
     totalBookings: 0,
     totalPendingBookings: 0,
   });
   const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
+  const [suggestionBookings, setSuggestionBookings] = useState<Booking[]>([]);
+  const [approvedBookings, setApprovedBookings] = useState<Booking[]>([]);
   const [pendingReviews, setPendingReviews] = useState<Review[]>([]);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [isLoadingBookings, setIsLoadingBookings] = useState(true);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
+  const [isLoadingApproved, setIsLoadingApproved] = useState(true);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const [processingBookingId, setProcessingBookingId] = useState<string | null>(null);
   const [processingReviewId, setProcessingReviewId] = useState<string | null>(null);
@@ -110,6 +117,54 @@ export default function AdminDashboard() {
 
     if (user?.role === 'admin') {
       fetchPendingBookings();
+    }
+  }, [user]);
+
+  // Fetch suggestion bookings
+  useEffect(() => {
+    const fetchSuggestionBookings = async () => {
+      try {
+        const response = await fetch('/api/admin/bookings?status=suggestion_pending');
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          setSuggestionBookings(result.bookings);
+        }
+      } catch (error) {
+        console.error('Error fetching suggestion bookings:', error);
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    };
+
+    if (user?.role === 'admin') {
+      fetchSuggestionBookings();
+    }
+  }, [user]);
+
+  // Fetch approved bookings
+  useEffect(() => {
+    const fetchApprovedBookings = async () => {
+      try {
+        const response = await fetch('/api/admin/bookings?status=approved');
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Sort by preferredDate in ascending order
+          const sortedBookings = result.bookings.sort((a: Booking, b: Booking) => {
+            return new Date(a.preferredDate).getTime() - new Date(b.preferredDate).getTime();
+          });
+          setApprovedBookings(sortedBookings);
+        }
+      } catch (error) {
+        console.error('Error fetching approved bookings:', error);
+      } finally {
+        setIsLoadingApproved(false);
+      }
+    };
+
+    if (user?.role === 'admin') {
+      fetchApprovedBookings();
     }
   }, [user]);
 
@@ -353,7 +408,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="mb-8 flex gap-4 pt-10">
+        <div className="mb-8 flex gap-4 pt-10 flex-wrap">
           <button
             onClick={() => setActiveTab('bookings')}
             className={`px-6 py-3 rounded-lg font-medium transition-all ${
@@ -363,6 +418,26 @@ export default function AdminDashboard() {
             }`}
           >
             Pending Bookings ({pendingBookings.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('suggestions')}
+            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+              activeTab === 'suggestions'
+                ? 'bg-[#FF5733] text-white shadow-lg shadow-[#FF5733]/30'
+                : 'bg-white/5 text-gray-400 hover:bg-white/10'
+            }`}
+          >
+            Suggestion Bookings ({suggestionBookings.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('approved')}
+            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+              activeTab === 'approved'
+                ? 'bg-[#FF5733] text-white shadow-lg shadow-[#FF5733]/30'
+                : 'bg-white/5 text-gray-400 hover:bg-white/10'
+            }`}
+          >
+            Approved Bookings ({approvedBookings.length})
           </button>
           <button
             onClick={() => setActiveTab('reviews')}
@@ -512,6 +587,244 @@ export default function AdminDashboard() {
                       </svg>
                       {processingBookingId === booking.id ? 'Processing...' : 'Suggest New Date/Time'}
                     </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+        )}
+
+        {/* Suggestion Bookings Section */}
+        {activeTab === 'suggestions' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg p-6"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-white">Suggestion Bookings</h2>
+            <span className="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-medium">
+              {suggestionBookings.length} awaiting response
+            </span>
+          </div>
+
+          {isLoadingSuggestions ? (
+            <div className="text-center py-12 text-gray-400">Loading suggestion bookings...</div>
+          ) : suggestionBookings.length === 0 ? (
+            <div className="text-center py-12">
+              <svg className="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-gray-400 text-lg">No suggestion bookings</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {suggestionBookings.map((booking, index) => (
+                <motion.div
+                  key={booking.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  className="bg-white/5 border-2 border-purple-500/30 rounded-lg p-5 hover:bg-white/10 transition-all"
+                >
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="bg-[#FF5733]/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-[#FF5733]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Customer</p>
+                          <p className="text-white font-semibold">{booking.fullName}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="bg-blue-500/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Contact</p>
+                          <p className="text-white">{booking.phoneNumber}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="bg-green-500/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Vehicle & Service</p>
+                          <p className="text-white font-semibold">{booking.vehicleNumber} - {booking.service}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="bg-red-500/10 border border-red-500/30 rounded p-3 mb-3">
+                        <p className="text-xs text-red-400 mb-1">Original Request:</p>
+                        <p className="text-white text-sm font-semibold">{booking.preferredDate} at {booking.preferredTime}</p>
+                      </div>
+                      <div className="bg-purple-500/10 border border-purple-500/30 rounded p-3">
+                        <p className="text-xs text-purple-400 mb-1">Suggested:</p>
+                        <p className="text-white text-sm font-semibold">{(booking as any).suggestedDate} at {(booking as any).suggestedTime}</p>
+                        {(booking as any).adminNote && (
+                          <p className="text-gray-400 text-xs mt-2">{(booking as any).adminNote}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {booking.specialNotes && (
+                    <div className="bg-white/5 rounded p-3 mb-3">
+                      <p className="text-xs text-gray-400 mb-1">Customer Notes:</p>
+                      <p className="text-white text-sm">{booking.specialNotes}</p>
+                    </div>
+                  )}
+
+                  <div className="bg-purple-500/10 border border-purple-500/30 rounded p-3 text-center">
+                    <p className="text-purple-300 text-sm">
+                      <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Waiting for customer response
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+        )}
+
+        {/* Approved Bookings Section */}
+        {activeTab === 'approved' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg p-6"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-white">Approved Bookings</h2>
+            <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+              {approvedBookings.length} scheduled
+            </span>
+          </div>
+
+          {isLoadingApproved ? (
+            <div className="text-center py-12 text-gray-400">Loading approved bookings...</div>
+          ) : approvedBookings.length === 0 ? (
+            <div className="text-center py-12">
+              <svg className="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              <p className="text-gray-400 text-lg">No approved bookings</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {approvedBookings.map((booking, index) => (
+                <motion.div
+                  key={booking.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  className="bg-white/5 border-2 border-green-500/30 rounded-lg p-5 hover:bg-white/10 transition-all"
+                >
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="bg-[#FF5733]/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-[#FF5733]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Customer</p>
+                          <p className="text-white font-semibold">{booking.fullName}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="bg-blue-500/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Contact</p>
+                          <p className="text-white">{booking.phoneNumber}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="bg-purple-500/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Email</p>
+                          <p className="text-white text-sm">{booking.email || 'N/A'}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="bg-green-500/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Vehicle</p>
+                          <p className="text-white font-semibold">{booking.vehicleNumber}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="bg-orange-500/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Scheduled Date & Time</p>
+                          <p className="text-white font-bold">{booking.preferredDate} at {booking.preferredTime}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="bg-yellow-500/20 p-2 rounded">
+                          <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Service</p>
+                          <p className="text-white font-semibold capitalize">{booking.service}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {booking.specialNotes && (
+                    <div className="bg-white/5 rounded p-3 mb-3">
+                      <p className="text-xs text-gray-400 mb-1">Special Notes:</p>
+                      <p className="text-white text-sm">{booking.specialNotes}</p>
+                    </div>
+                  )}
+
+                  <div className="bg-green-500/10 border border-green-500/30 rounded p-3 text-center">
+                    <p className="text-green-300 text-sm font-medium">
+                      <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Booking Confirmed
+                    </p>
                   </div>
                 </motion.div>
               ))}

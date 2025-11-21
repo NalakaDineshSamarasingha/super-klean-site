@@ -6,6 +6,13 @@ export async function GET(
   { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
+    if (!adminDb) {
+      return NextResponse.json(
+        { error: 'Database not initialized' },
+        { status: 500 }
+      );
+    }
+
     const { userId } = await params;
 
     if (!userId) {
@@ -54,6 +61,13 @@ export async function PATCH(
   { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
+    if (!adminDb || !adminAuth) {
+      return NextResponse.json(
+        { error: 'Database not initialized' },
+        { status: 500 }
+      );
+    }
+
     const { userId } = await params;
 
     if (!userId) {
@@ -132,6 +146,13 @@ export async function DELETE(
   { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
+    if (!adminDb || !adminAuth) {
+      return NextResponse.json(
+        { error: 'Database not initialized' },
+        { status: 500 }
+      );
+    }
+
     const { userId } = await params;
 
     if (!userId) {

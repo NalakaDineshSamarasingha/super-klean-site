@@ -3,6 +3,13 @@ import { adminDb } from '@/lib/firebaseAdmin';
 
 export async function PUT(request: NextRequest) {
   try {
+    if (!adminDb) {
+      return NextResponse.json(
+        { error: 'Database not initialized' },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
     const { bookingId, suggestedDate, suggestedTime } = body;
 
