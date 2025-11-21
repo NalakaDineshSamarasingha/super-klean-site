@@ -16,8 +16,11 @@ interface Booking {
   preferredDate: string;
   preferredTime: string;
   specialNotes: string;
-  status: 'pending' | 'approved' | 'rejected' | 'completed';
+  status: 'pending' | 'approved' | 'rejected' | 'completed' | 'suggestion_pending' | 'cancelled';
   createdAt: string;
+  suggestedDate?: string;
+  suggestedTime?: string;
+  adminNote?: string;
 }
 
 interface Review {
@@ -83,10 +86,10 @@ export default function Dashboard() {
           
           // Separate current and past bookings
           const current = allBookings.filter((b: Booking) => 
-            b.status === 'pending' || b.status === 'approved'
+            b.status === 'pending' || b.status === 'approved' || b.status === 'suggestion_pending'
           );
           const past = allBookings.filter((b: Booking) => 
-            b.status === 'completed' || b.status === 'rejected'
+            b.status === 'completed' || b.status === 'rejected' || b.status === 'cancelled'
           );
           
           setCurrentBookings(current);
@@ -170,8 +173,82 @@ export default function Dashboard() {
         return 'bg-green-500/20 text-green-400 border-green-500/50';
       case 'rejected':
         return 'bg-red-500/20 text-red-400 border-red-500/50';
+      case 'suggestion_pending':
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/50';
+      case 'cancelled':
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/50';
       default:
         return 'bg-gray-500/20 text-gray-400 border-gray-500/50';
+    }
+  };
+
+  const handleAcceptSuggestion = async (bookingId: string, suggestedDate: string, suggestedTime: string) => {
+    try {
+      const response = await fetch('/api/bookings/accept-suggestion', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId, suggestedDate, suggestedTime }),
+      });
+
+      if (response.ok) {
+        toast.success('Suggestion accepted! Booking updated.');
+        // Refresh bookings
+        const bookingsResponse = await fetch(`/api/bookings/list?userId=${user?.uid}`);
+        if (bookingsResponse.ok) {
+          const bookingsResult = await bookingsResponse.json();
+          const allBookings = bookingsResult.bookings || [];
+          const current = allBookings.filter((b: Booking) => 
+            b.status === 'pending' || b.status === 'approved' || b.status === 'suggestion_pending'
+          );
+          const past = allBookings.filter((b: Booking) => 
+            b.status === 'completed' || b.status === 'rejected' || b.status === 'cancelled'
+          );
+          setCurrentBookings(current);
+          setPastBookings(past);
+        }
+      } else {
+        const result = await response.json();
+        throw new Error(result.error || 'Failed to accept suggestion');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to accept suggestion');
+    }
+  };
+
+  const handleRejectSuggestion = async (bookingId: string) => {
+    if (!confirm('Are you sure you want to reject this suggestion? This will cancel your booking.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/bookings/reject-suggestion', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId }),
+      });
+
+      if (response.ok) {
+        toast.success('Booking cancelled successfully.');
+        // Refresh bookings
+        const bookingsResponse = await fetch(`/api/bookings/list?userId=${user?.uid}`);
+        if (bookingsResponse.ok) {
+          const bookingsResult = await bookingsResponse.json();
+          const allBookings = bookingsResult.bookings || [];
+          const current = allBookings.filter((b: Booking) => 
+            b.status === 'pending' || b.status === 'approved' || b.status === 'suggestion_pending'
+          );
+          const past = allBookings.filter((b: Booking) => 
+            b.status === 'completed' || b.status === 'rejected' || b.status === 'cancelled'
+          );
+          setCurrentBookings(current);
+          setPastBookings(past);
+        }
+      } else {
+        const result = await response.json();
+        throw new Error(result.error || 'Failed to cancel booking');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to cancel booking');
     }
   };
 
@@ -294,7 +371,7 @@ export default function Dashboard() {
                       <motion.div
                         key={booking.id}
                         initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
                         className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10 hover:border-white/20 transition-all"
                       >
@@ -318,6 +395,58 @@ export default function Dashboard() {
                             <span>{booking.preferredTime}</span>
                           </div>
                         </div>
+
+                        {/* Customer Special Notes */}
+                        {booking.specialNotes && (
+                          <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-3">
+                            <p className="text-xs text-gray-400 mb-1">Your Note:</p>
+                            <p className="text-sm text-white">{booking.specialNotes}</p>
+                          </div>
+                        )}
+
+                        {/* Admin Suggestion Section */}
+                        {booking.status === 'suggestion_pending' && booking.suggestedDate && booking.suggestedTime && (
+                          <div className="mt-4">
+                            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-3">
+                              <h4 className="text-sm font-semibold text-purple-400 mb-2">Admin Suggestion:</h4>
+                              <div className="flex flex-wrap gap-3 text-sm text-white mb-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-purple-400">📅</span>
+                                  <span>New Date: {new Date(booking.suggestedDate).toLocaleDateString()}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-purple-400">⏰</span>
+                                  <span>New Time: {booking.suggestedTime}</span>
+                                </div>
+                              </div>
+                              {booking.adminNote && (
+                                <p className="text-xs text-gray-300 mt-2">
+                                  <span className="text-purple-400 font-semibold">Admin Note:</span> {booking.adminNote}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-3">
+                              <button
+                                onClick={() => handleAcceptSuggestion(booking.id, booking.suggestedDate!, booking.suggestedTime!)}
+                                className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Accept New Time
+                              </button>
+                              <button
+                                onClick={() => handleRejectSuggestion(booking.id)}
+                                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Cancel Booking
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     ))
                   )}

@@ -57,6 +57,11 @@ export default function AdminDashboard() {
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const [processingBookingId, setProcessingBookingId] = useState<string | null>(null);
   const [processingReviewId, setProcessingReviewId] = useState<string | null>(null);
+  const [showSuggestModal, setShowSuggestModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [suggestedDate, setSuggestedDate] = useState('');
+  const [suggestedTime, setSuggestedTime] = useState('');
+  const [adminNote, setAdminNote] = useState('');
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'admin')) {
@@ -161,6 +166,66 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error updating booking status:', error);
       alert('Failed to update booking status');
+    } finally {
+      setProcessingBookingId(null);
+    }
+  };
+
+  const handleSuggestDateTime = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setSuggestedDate(booking.preferredDate);
+    setSuggestedTime(booking.preferredTime);
+    setAdminNote('');
+    setShowSuggestModal(true);
+  };
+
+  const handleSubmitSuggestion = async () => {
+    if (!selectedBooking || !suggestedDate || !suggestedTime) {
+      alert('Please provide both date and time');
+      return;
+    }
+
+    setProcessingBookingId(selectedBooking.id);
+    
+    try {
+      const response = await fetch('/api/admin/bookings/suggest-datetime', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          bookingId: selectedBooking.id,
+          suggestedDate,
+          suggestedTime,
+          adminNote,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        // Remove the booking from pending list
+        setPendingBookings(prev => prev.filter(b => b.id !== selectedBooking.id));
+        
+        // Update stats
+        setStats(prev => ({
+          ...prev,
+          totalPendingBookings: prev.totalPendingBookings - 1,
+        }));
+
+        setShowSuggestModal(false);
+        setSelectedBooking(null);
+        setSuggestedDate('');
+        setSuggestedTime('');
+        setAdminNote('');
+        
+        alert('Date/Time suggestion sent to customer successfully!');
+      } else {
+        alert(result.error || 'Failed to send suggestion');
+      }
+    } catch (error) {
+      console.error('Error sending suggestion:', error);
+      alert('Failed to send suggestion');
     } finally {
       setProcessingBookingId(null);
     }
@@ -435,17 +500,17 @@ export default function AdminDashboard() {
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      {processingBookingId === booking.id ? 'Processing...' : 'Approve'}
+                      {processingBookingId === booking.id ? 'Processing...' : 'Accept'}
                     </button>
                     <button
-                      onClick={() => handleUpdateStatus(booking.id, 'rejected')}
+                      onClick={() => handleSuggestDateTime(booking)}
                       disabled={processingBookingId === booking.id}
-                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      {processingBookingId === booking.id ? 'Processing...' : 'Reject'}
+                      {processingBookingId === booking.id ? 'Processing...' : 'Suggest New Date/Time'}
                     </button>
                   </div>
                 </motion.div>
@@ -601,6 +666,90 @@ export default function AdminDashboard() {
           </button>
         </div>
       </div>
+
+      {/* Suggest Date/Time Modal */}
+      {showSuggestModal && selectedBooking && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-gradient-to-br from-gray-900 to-black border border-white/20 rounded-2xl p-8 max-w-md w-full shadow-2xl"
+          >
+            <h3 className="text-2xl font-bold text-white mb-6">Suggest New Date & Time</h3>
+            
+            <div className="space-y-5 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Customer: <span className="text-white">{selectedBooking.fullName}</span>
+                </label>
+                <label className="block text-xs text-gray-400">
+                  Current Request: {selectedBooking.preferredDate} at {selectedBooking.preferredTime}
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Suggested Date <span className="text-[#FF5733]">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={suggestedDate}
+                  onChange={(e) => setSuggestedDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white focus:outline-none focus:border-[#FF5733] transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Suggested Time <span className="text-[#FF5733]">*</span>
+                </label>
+                <input
+                  type="time"
+                  value={suggestedTime}
+                  onChange={(e) => setSuggestedTime(e.target.value)}
+                  className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white focus:outline-none focus:border-[#FF5733] transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Admin Note <span className="text-gray-500">(Optional)</span>
+                </label>
+                <textarea
+                  value={adminNote}
+                  onChange={(e) => setAdminNote(e.target.value)}
+                  rows={3}
+                  placeholder="Reason for suggesting different date/time..."
+                  className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#FF5733] transition-all resize-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowSuggestModal(false);
+                  setSelectedBooking(null);
+                  setSuggestedDate('');
+                  setSuggestedTime('');
+                  setAdminNote('');
+                }}
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl font-medium transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitSuggestion}
+                disabled={!suggestedDate || !suggestedTime || processingBookingId === selectedBooking.id}
+                className="flex-1 bg-[#FF5733] hover:bg-[#E64A2E] disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-3 px-4 rounded-xl font-medium transition-all"
+              >
+                {processingBookingId === selectedBooking.id ? 'Sending...' : 'Send Suggestion'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
